@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using DotnetExample.Core.Contexts;
 using DotnetExample.Core.Models;
 using DotnetExample.Core.Dto.Post;
@@ -18,10 +19,12 @@ public interface IPostService
 public class PostService : IPostService
 {
     private readonly DatabaseContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public PostService(DatabaseContext dbContext)
+    public PostService(DatabaseContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     public async Task<IEnumerable<Post>> GetPosts()
@@ -38,9 +41,7 @@ public class PostService : IPostService
 
     public async Task<Post> CreatePost(CreatePostDto data)
     {
-        var newPost = new Post();
-        newPost.Title = data.Title;
-        newPost.Content = data.Content;
+        var newPost = _mapper.Map<Post>(data);
         _dbContext.Posts.Add(newPost);
         await _dbContext.SaveChangesAsync();
         return newPost;
@@ -49,8 +50,7 @@ public class PostService : IPostService
     public async Task<Post> UpdatePost(long id, UpdatePostDto data)
     {
         var post = await FindById(id);
-        post.Title = data.Title;
-        post.Content = data.Content;
+        _mapper.Map(data, post);
         _dbContext.Posts.Update(post);
         await _dbContext.SaveChangesAsync();
         return post;

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using DotnetExample.Core.Services;
 using DotnetExample.Core.Dto.Post;
 using DotnetExample.Core.Models;
-using DotnetExample.Core.Dto.Post;
 
 namespace DotnetExample.Core.Controllers;
 
@@ -18,10 +18,11 @@ public class PostController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<Post> CreatePost(CreatePostDto data)
+    [ProducesResponseType(201)]
+    public async Task<ActionResult<Post>> CreatePost(CreatePostDto data)
     {
         var post = await _postService.CreatePost(data);
-        return post;
+        return Created("uri", post);
     }
 
     [HttpGet]

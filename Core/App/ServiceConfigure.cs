@@ -29,6 +29,7 @@ class ServiceConfigure
         _Services.AddSwaggerGen();
 
         ConfigureCors();
+        ConfigureMapper();
         AddAppService();
     }
 
@@ -55,6 +56,11 @@ class ServiceConfigure
                 });
             }
         );
+    }
+
+    private void ConfigureMapper()
+    {
+        new MapperConfigure(_Services).Configure();
     }
 
     private void AddAppService()
